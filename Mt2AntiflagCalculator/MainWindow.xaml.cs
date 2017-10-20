@@ -26,6 +26,7 @@ namespace Mt2AntiflagCalculator
         {
             InitializeComponent();
             InitCheckBox();
+            InitTriggers();
         }
 
         /// <summary>
@@ -67,6 +68,11 @@ namespace Mt2AntiflagCalculator
             }
         }
 
+        private void InitTriggers()
+        {
+            IntegerValue.TextChanged += new TextChangedEventHandler(NumberChanged);
+        }
+
         /// <summary>
         /// Trigger for Checkbox status changed
         /// </summary>
@@ -89,6 +95,37 @@ namespace Mt2AntiflagCalculator
                     tmp += (int)Math.Pow(2, i);
 
             IntegerValue.Text = "" + tmp;
+        }
+
+        /// <summary>
+        /// Trigger for Number value changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NumberChanged(object sender, TextChangedEventArgs e)
+        {
+            CalcNumber();
+        }
+
+        /// <summary>
+        /// Calculate the flags corresponding to the current integer number written
+        /// </summary>
+        private void CalcNumber()
+        {
+            if ((IntegerValue.Text == null) || (IntegerValue.Text.Length == 0))
+                return;
+
+            int parsed;
+            try { parsed = Int32.Parse(IntegerValue.Text); }
+            catch (FormatException) { return; }
+
+            int tmp = 0;
+
+            for (int i = 0; i < checkBox.Length; i++)
+            {
+                tmp = (int)Math.Pow(2, i);
+                checkBox[i].IsChecked = ((parsed & tmp) != tmp);
+            }
         }
     }
 }
